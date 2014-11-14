@@ -73,17 +73,30 @@ module WktimeHelper
 		
 		hoursIndex = headers.size
 		startOfWeek = getStartOfWeek
-		for i in 0..6
+		period_types = periodtypes
+		day_nanme =0
+		for i in 0..@days
+			if  period_types.blank?
+				day_nanme = (i+(startOfWeek))%7
+			else
+				if  !@startday.blank? 
+					date = @startday +i;
+					day_nanme = date.cwday
+					day_nanme = 0 if day_nanme == 7
+				end
+			end
 			#Use "\n" instead of '\n'
 			#Martin Dube contribution: 'start of the week' configuration		
-			headers << (l('date.abbr_day_names')[(i+startOfWeek)%7] + "\n" + I18n.localize(@startday+i, :format=>:short)) unless @startday.nil?
+			#headers << (l('date.abbr_day_names')[(i+startOfWeek)%7] + "\n" + I18n.localize(@startday+i, :format=>:short)) unless @startday.nil?
+			headers << (l('date.abbr_day_names')[day_nanme] + "\n" + I18n.localize(@startday+i, :format=>:short)) unless @startday.nil?
 		end
       csv << headers.collect {|c| Redmine::CodesetUtil.from_utf8(
                   c.to_s, l(:general_csv_encoding) )  }
 		weeklyHash = getWeeklyView(entries, unitLabel, true) #should send false and form unique rows
 		col_values = []
 		matrix_values = nil
-		totals = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+	#	totals = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+		totals = Array.new(@days+1, 0.0)
 		weeklyHash.each do |key, matrix|
 			matrix_values, j = getColumnValues(matrix, totals, unitLabel,false,0)
 			col_values = matrix_values[0]
@@ -151,19 +164,31 @@ module WktimeHelper
 	orientation = "P"
 	unit=nil
 	# 20% for project, 60% for issue, 20% for activity
+	#col_width[0]=col_id_width
+	#col_width[1] = (table_width - (8*10))*0.2
+	#col_width[2] = (table_width - (8*10))*0.6
+	#col_width[3] = (table_width - (8*10))*0.2
+	column_width = call_hook(:helper_pdf_view_column_width,:pagewidth => page_width.to_s,:unitLabel => !unitLabel.blank? ? unitLabel :'')
+	col_id_width  = column_width.blank? ? col_id_width: (column_width.is_a?(Array) ? (column_width[0].blank? ? col_id_width: column_width[0].to_f) : column_width.to_i)
 	col_width[0]=col_id_width
-	col_width[1] = (table_width - (8*10))*0.2
-	col_width[2] = (table_width - (8*10))*0.6
-	col_width[3] = (table_width - (8*10))*0.2
+	col_width[1] = (table_width - ((@days+2)*col_id_width))*0.2
+	col_width[2] = (table_width - ((@days+2)*col_id_width))*0.6
+	col_width[3] = (table_width - ((@days+2)*col_id_width))*0.2
 	title=l(:label_wktime)
 	if !unitLabel.blank?
 		columns << l(:label_wk_currency)
 		col_id_width  = 14
+		col_id_width  = column_width.blank? ? col_id_width: (column_width.is_a?(Array) ? (column_width[0].blank? ? col_id_width: column_width[0].to_f) : column_width.to_i)
+		#col_width[0]=col_id_width
+		#col_width[1] = (table_width - (8*14))*0.20
+		#col_width[2] = (table_width - (8*14))*0.45
+		#col_width[3] = (table_width - (8*14))*0.15
+		#col_width[4] = (table_width - (8*14))*0.20
 		col_width[0]=col_id_width
-		col_width[1] = (table_width - (8*14))*0.20
-		col_width[2] = (table_width - (8*14))*0.45
-		col_width[3] = (table_width - (8*14))*0.15
-		col_width[4] = (table_width - (8*14))*0.20
+		col_width[1] = (table_width - ((@days+2)*col_id_width))*0.20
+		col_width[2] = (table_width - ((@days+2)*col_id_width))*0.45
+		col_width[3] = (table_width - ((@days+2)*col_id_width))*0.15
+		col_width[4] = (table_width - ((@days+2)*col_id_width))*0.20
 		title= l(:label_wkexpense)
 	end	
 	
@@ -172,12 +197,23 @@ module WktimeHelper
 	
 	hoursIndex = columns.size
 	startOfWeek = getStartOfWeek
-	for i in 0..6
+	period_types = periodtypes
+		day_nanme =0
+		for i in 0..@days
+			if  period_types.blank?
+				day_nanme = (i+(startOfWeek))%7
+			else
+				if  !@startday.blank? 
+					date = @startday +i;
+					day_nanme = date.cwday
+					day_nanme = 0 if day_nanme == 7
+				end
+			end
 		#Martin Dube contribution: 'start of the week' configuration		
-		columns << l('date.abbr_day_names')[(i+startOfWeek)%7] + "\n" + (startday+i).mon().to_s() + "/" + (startday+i).day().to_s()
+		#columns << l('date.abbr_day_names')[(i+startOfWeek)%7] + "\n" + (startday+i).mon().to_s() + "/" + (startday+i).day().to_s()
+		columns << l('date.abbr_day_names')[day_nanme] + "\n" + (startday+i).mon().to_s() + "/" + (startday+i).day().to_s()
 		col_width << col_id_width
 	end	
-	
 	#Landscape / Potrait
 	if(table_width > 220)
 		orientation = "L"
@@ -205,7 +241,8 @@ module WktimeHelper
 	weeklyHash = getWeeklyView(entries, unitLabel, true)
 	col_values = []
 	matrix_values = []
-	totals = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+	#totals = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+	totals  = Array.new(@days+1, 0.0)
 	grand_total = 0.0
 	j = 0
 	base_x = pdf.GetX
@@ -263,6 +300,9 @@ module WktimeHelper
 		max_height = row_height
 		col_values.each_with_index do |val, i|
 			col_x = pdf.GetX
+			if val.nil? 
+				val =''
+			end
 			pdf.RDMMultiCell(col_widths[i], row_height, val, "T", 'L', 1)
 			max_height = (pdf.GetY - base_y) if (pdf.GetY - base_y) > max_height
 			pdf.SetXY(col_x + col_widths[i], base_y);
@@ -327,6 +367,10 @@ module WktimeHelper
 				#wday returns 0 - 6, 0 is sunday
 				startOfWeek = getStartOfWeek
 				index = (entry.spent_on.wday+7-(startOfWeek))%7
+				
+				daydiff = call_hook(:controller_day_difference,:startday => @startday.to_s , :spentday  => entry.spent_on.to_s)
+				index  = daydiff.blank? ? index: (daydiff.is_a?(Array) ? (daydiff[0].blank? ? index: daydiff[0].to_f) : daydiff.to_i)
+					
 				updated = false
 				hourMatrix.each do |rows|
 					if rows[index].blank?
@@ -441,7 +485,11 @@ end
 		
 		render_header_elements(pdf, base_x, pdf.GetY+row_height, l(:field_name), user.name)
 		#render_header_elements(pdf, base_x, pdf.GetY+row_height, l(:field_project), entries.blank? ? "" : entries[0].project.name)
-		render_header_elements(pdf, base_x, pdf.GetY+row_height, l(:label_week), startday.to_s + " - " + (startday+6).to_s)
+		#render_header_elements(pdf, base_x, pdf.GetY+row_height, l(:label_week), startday.to_s + " - " + (startday+6).to_s)
+		period_types = periodtypes
+		
+		period_types = period_types.blank? ? l(:label_week): (period_types.is_a?(Array) ? (period_types[0].blank? ? l(:label_week): period_types[0].to_s) : period_types.to_s)
+		render_header_elements(pdf, base_x, pdf.GetY+row_height, period_types.to_s, startday.to_s + " - " + (startday+@days).to_s)
 		render_customFields(pdf, base_x, user, startday, row_height)
 		pdf.SetXY(base_x, pdf.GetY+row_height)
 	end
@@ -561,10 +609,12 @@ end
 		startOfWeek = getStartOfWeek
 		#Martin Dube contribution: 'start of the week' configuration
 		unless date.nil?			
+			currentday = call_hook(:controller_period_start_day,:currentday => date.to_s)
 			#the day of calendar week (0-6, Sunday is 0)			
 			dayfirst_diff = (date.wday+7) - (startOfWeek)
 			date -= (dayfirst_diff%7)
-		end		
+			date  = currentday.blank? ? date: (currentday.is_a?(Array) ? (currentday[0].blank? ? date: currentday[0].to_date) : currentday.to_date)			
+		end	
 		date
 	end
 	
@@ -613,6 +663,8 @@ end
 		else
 			# mysql - the weekday index for date (0 = Monday, 1 = Tuesday, … 6 = Sunday)
 			sqlStr = "adddate(" + dtfield + ",mod(weekday(" + dtfield + ")+(8-" + startOfWeek.to_s + "),7)*-1)"
+			sqlQueryStr = call_hook(:controller_spent_on_te,:te_spent_on =>dtfield)
+			sqlStr = sqlQueryStr[0].blank? ? sqlStr: sqlQueryStr[0].to_s
 		end		
 		sqlStr
 	end
@@ -629,6 +681,8 @@ end
 			columns << ',' if !columns.blank?
 			columns << ((((day.to_i +7) - startOfWeek ) % 7) + 1).to_s
 		end
+		non_working_days = call_hook(:controller_non_working_days,:startday => startDate.to_s , :non_working_week_days  => ndays,:monthdays =>@days)
+		columns = non_working_days.blank? ? columns : non_working_days
 		publicHolidayColumn = getPublicHolidayColumn(startDate)		
 		publicHolidayColumn = publicHolidayColumn.join(',') if !publicHolidayColumn.nil?		
 		columns << ","  if !publicHolidayColumn.blank? && !columns.blank?
@@ -673,7 +727,7 @@ end
 		publicHolidays = getPublicHolidays()	
 		if !publicHolidays.nil? 
 			columns = Array.new
-			for i in 0..6				
+			for i in 0..@days				
 				columns << (i+1).to_s if checkHoliday((startDate.to_date + i).to_s,publicHolidays)	
 			end	
 		end		
@@ -686,7 +740,7 @@ end
 		pHdays = getPublicHolidays()
 		wDayOfPublicHoliday = Array.new
 		if !pHdays.blank?		
-			for i in 0..6
+			for i in 0..@days
 				wDayOfPublicHoliday << ((startDate+i).cwday).to_s if checkHoliday((startDate + i).to_s,pHdays)
 			end
 		end	
@@ -705,5 +759,8 @@ end
 	
 	def is_number(val)
 		true if Float(val) rescue false
+	end
+	def periodtypes
+		 call_hook(:controller_period_type)
 	end
 end

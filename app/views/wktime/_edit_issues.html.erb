@@ -3,7 +3,8 @@
 @trOpen = false
 @row = 0
 @total_hours = 0.0
-thours = nums = Array[0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0]
+#thours = nums = Array[0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0]
+thours = nums = Array.new(@days+1, 0.0)
 prev_entry = nil
 entry = nil 
 currencySym = ""
@@ -39,7 +40,7 @@ currencySym = ""
 						<% # this is a new Row %>
 						<% # close the previously opened row first %>
 						<%= render :partial => 'edit_hours', :locals => {:entry => nil, :isTemplate => false,
-							:padAt => 'end', :padTill => 8}%>
+							:padAt => 'end', :padTill => (@days+2)}%>
 					
 						<%= render :partial => 'edit_issues2', :locals => {:entry => entry, :isTemplate => false}%>		
 						<% issueWritten = true %>
@@ -67,7 +68,7 @@ currencySym = ""
 	
 	<% # pad any incomplete days %>
 	<%= render :partial => 'edit_hours', :locals => {:entry => nil, :isTemplate => false,
-		:padAt => 'end', :padTill => 8}%>
+		:padAt => 'end', :padTill => (@days+2)}%>
 
 	<!-- row for putting the total -->
 	<tr>
@@ -99,7 +100,7 @@ currencySym = ""
 		<%= submit_tag l(:button_save), :id => 'wktime_save', :name => 'wktime_save',  :disabled => !(@row > 0)%>
 	<% if !Setting.plugin_redmine_wktime[:wktime_use_approval_system].blank? &&
 			Setting.plugin_redmine_wktime[:wktime_use_approval_system].to_i == 1 %>		
-			<%= submit_tag l(:button_submit),:id => 'wktime_submit', :name => 'wktime_submit', :onclick => "return validateMinhour('#{controller.minHour}','#{getNonWorkingDayColumn(params[:startday])}');" , :disabled => !(@row > 0)%>
+			<%= submit_tag l(:button_submit),:id => 'wktime_submit', :name => 'wktime_submit', :onclick => "return validateMinhour('#{controller.minHour}','#{getNonWorkingDayColumn(params[:startday])}','#{(@days+1)}');" , :disabled => !(@row > 0)%>
 	<% end %>
 <% end %>
 <% if !Setting.plugin_redmine_wktime[:wktime_use_approval_system].blank? &&

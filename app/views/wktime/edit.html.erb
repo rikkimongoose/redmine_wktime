@@ -129,10 +129,16 @@
 	<% # Martin Dube Contribution: show previous and next time entry %>
 	<tr>	
 	<td colspan="2">
-		 <%= link_to("\xc2\xab " + l(:label_previous ), {:controller => controller.controller_name, :action => 'edit', :startday => @startday-7, :user_id => @user.id, :project_id => params[:project_id]},
+	<%
+		pre_days =	call_hook(:controller_previous_te,:startday => @startday.to_s)
+		pre_days = pre_days.blank? ? 7: pre_days.to_i
+		next_days =	call_hook(:controller_next_te,:startday => @startday.to_s)
+		next_days = next_days.blank? ? 7: next_days.to_i
+	%>
+		 <%= link_to("\xc2\xab " + l(:label_previous ), {:controller => controller.controller_name, :action => 'edit', :startday => @startday-pre_days, :user_id => @user.id, :project_id => params[:project_id]},
                   :title => l(:label_wk_prev_week_tip)) %>
       |
-      <%= link_to(l(:label_next) + " \xc2\xbb", {:controller => controller.controller_name, :action => 'edit', :startday => @startday+7, :user_id => @user.id, :project_id => params[:project_id]},
+      <%= link_to(l(:label_next) + " \xc2\xbb", {:controller => controller.controller_name, :action => 'edit', :startday => @startday+next_days, :user_id => @user.id, :project_id => params[:project_id]},
                   :title => l(:label_wk_next_week_tip)) %> 
 	</td>
 	</tr>

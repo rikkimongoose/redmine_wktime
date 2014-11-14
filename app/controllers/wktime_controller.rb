@@ -14,12 +14,21 @@ accept_api_auth :index, :edit, :update, :destroy, :deleteEntries
 helper :custom_fields
  
   def index
+	wktelist_session
     retrieve_date_range	
 	@from = getStartDay(@from)
-	@to = getEndDay(@to)
+	period_types = periodtypes
+	if  period_types.blank?
+		@to = getEndDay(@to)
+	end	
 	# Paginate results
-	user_id = params[:user_id]
-	group_id = params[:group_id]
+	if !params[:tab].blank? && params[:tab] =='wkexpense'
+		user_id = session[:wkexpense][:user_id]
+		group_id = session[:wkexpense][:group_id]
+	else
+		user_id = session[:wktimes][:user_id]#params[:user_id]
+		group_id = session[:wktimes][:group_id]#group_id = params[:group_id]
+	end
 	set_user_projects
 	if (!@manage_view_spenttime_projects.blank? && @manage_view_spenttime_projects.size > 0)
 		@selected_project = getSelectedProject(@manage_view_spenttime_projects)
@@ -50,7 +59,8 @@ helper :custom_fields
 	spField = getSpecificField()
 	entityNames = getEntityNames()
 	selectStr = "select v1.user_id, v1.startday as spent_on, v1." + spField
-	wkSelectStr = selectStr + ", w.status "		
+	#wkSelectStr = selectStr + ", w.status "	
+	wkSelectStr = selectStr + ",CASE WHEN w.status IS NULL THEN 'n' ELSE w.status END as status	"	
 	sqlStr = " from "
 	sDay = getDateSqlString('t.spent_on')
 	#Martin Dube contribution: 'start of the week' configuration
@@ -69,7 +79,12 @@ helper :custom_fields
 	end		
 
 	wkSqlStr = " left outer join " + entityNames[0] + " w on v1.startday = w.begin_date and v1.user_id = w.user_id"	
-	status = params[:status]
+	#status = params[:status]
+	if !params[:tab].blank? && params[:tab] =='wkexpense'
+		status = session[:wkexpense][:status]
+	else
+		status = session[:wktimes][:status]
+	end
 	if !status.blank? && status != 'all'
 		wkSqlStr += " WHERE w.status = '#{status}'" 
 		if status == 'n'
@@ -613,7 +628,16 @@ private
 
 	def getUsersbyGroup
 		groupusers= nil
-		scope=User.in_group(params[:group_id])  if params[:group_id].present?
+		if !params[:group_id].blank?
+			scope=User.in_group(params[:group_id])  if params[:group_id].present?
+		else
+			if !params[:tab].blank? && params[:tab] =='wkexpense'
+				group_id = session[:wkexpense][:group_id]
+			else
+				group_id = session[:wktimes][:group_id]
+			end
+		scope=User.in_group(group_id.to_i)  if !group_id.nil?
+		end
 		groupusers =scope.all
 	end
 	
@@ -847,7 +871,9 @@ private
 	
 	def findEntries
 		setup	
-		cond = getCondition('spent_on', @user.id, @startday, @startday+6)		
+		no_of_days = call_hook(:controller_edit_date,:currentday => @startday.to_s)
+		@days = no_of_days[0].blank? ? 6: (no_of_days[0].to_i)-1
+		cond = getCondition('spent_on', @user.id, @startday, @startday+@days)		
 		findEntriesByCond(cond)
 	end
 	
@@ -997,8 +1023,27 @@ private
     @free_period = false
     @from, @to = nil, nil
 
-    if params[:period_type] == '1' || (params[:period_type].nil? && !params[:period].nil?)
-      case params[:period].to_s
+     #if params[:period_type] == '1' || (params[:period_type].nil? && !params[:period].nil?)
+	if params[:control] =='reportdetail' || params[:control] =='report'
+		period_type =  params[:period_type]
+		period = params[:period]
+		fromdate = todate= nil
+		Rails.logger.info("----------------------------- period_start_date ---------------------------------------------------------------")	
+					Rails.logger.info("@period_start_date: #{period}, #{period_type}")
+	elsif params[:tab] == 'wkexpense'
+		period_type = session[:wkexpense][:period_type]
+		period = session[:wkexpense][:period]
+		fromdate = session[:wkexpense][:from]
+		todate = session[:wkexpense][:to]
+	else
+		period_type = session[:wktimes][:period_type]
+		period = session[:wktimes][:period]
+		fromdate = session[:wktimes][:from]
+		todate = session[:wktimes][:to]
+	end
+	if (period_type == '1' || (period_type.nil? && !period.nil?)) 
+		
+      case period.to_s
       when 'today'
         @from = @to = Date.today
       when 'yesterday'
@@ -1024,10 +1069,22 @@ private
       when 'current_year'
         @from = Date.civil(Date.today.year, 1, 1)
         @to = Date.civil(Date.today.year, 12, 31)
+	else
+		period_start_date = call_hook(:controller_period_date,:periodtype => period.to_s)
+		Rails.logger.info("----------------------------- period_start_date ---------------------------------------------------------------")	
+					Rails.logger.info("@period_start_date: #{period_start_date}")
+		if  !period_start_date.blank? && !period_start_date[0].blank?
+			@from = period_start_date[0].to_date
+			end_day = call_hook(:controller_edit_date,:currentday => @from.to_s)
+			@to = end_day[0].blank? ? @to: @from+ ((end_day[0].to_i)-1)
+		end
       end
-    elsif params[:period_type] == '2' || (params[:period_type].nil? && (!params[:from].nil? || !params[:to].nil?))
-      begin; @from = params[:from].to_s.to_date unless params[:from].blank?; rescue; end
-      begin; @to = params[:to].to_s.to_date unless params[:to].blank?; rescue; end
+    # elsif params[:period_type] == '2' || (params[:period_type].nil? && (!params[:from].nil? || !params[:to].nil?))
+    elsif period_type == '2' || (period_type.nil? && (!fromdate.nil? || !todate.nil?))
+		
+			begin; @from = fromdate.to_s.to_date unless fromdate.blank?; rescue; end
+			begin; @to = todate.to_s.to_date unless todate.blank?; rescue; end
+		
       @free_period = true
     else
       # default
@@ -1044,7 +1101,16 @@ private
 	def setgroups
 		@groups = Group.sorted.all
 		@members = Array.new
-		if params[:projgrp_type] == '2'
+		projgrp_type =nil
+		#if params[:projgrp_type] == '2' 
+		if !params[:tab].blank? && params[:tab] =='wkexpense'
+			projgrp_type = session[:wkexpense][:projgrp_type]
+		else
+			projgrp_type = session[:wktimes][:projgrp_type]
+		end		
+		
+		if   !projgrp_type.nil? && projgrp_type == '2'
+
 			userLists=[]
 			userLists = getMembers
 			@use_group=true
@@ -1315,7 +1381,12 @@ private
 	end	
 	
 	def getSelectedProject(projList)
-		selected_proj_id = params[:project_id]
+		if !params[:tab].blank? && params[:tab] =='wkexpense'
+			selected_proj_id = session[:wkexpense][:project_id]
+		else
+			selected_proj_id = session[:wktimes][:project_id]
+		end
+		#selected_proj_id = params[:project_id]
 		if !selected_proj_id.blank?
 			sel_project = projList.select{ |proj| proj.id == selected_proj_id.to_i }	
 			selected_project ||= sel_project[0] if !sel_project.blank?
@@ -1357,4 +1428,33 @@ private
 		end
 		rangeStr
 	end
+	def wktelist_session
+	 
+		if params[:searchlist].blank? && (session[:wktimes].nil? || session[:wkexpense].nil?)
+			
+			session[:wktimes] = {:period_type => params[:period_type], :period => params[:period],:from => params[:from],:to => params[:to],:project_id => params[:project_id], :projgrp_type => params[:projgrp_type],:user_id => params[:user_id],:status => params[:status],:group_id => params[:group_id] }
+			session[:wkexpense] = {:period_type => params[:period_type], :period => params[:period],:from => params[:from],:to => params[:to],:project_id => params[:project_id], :projgrp_type => params[:projgrp_type],:user_id => params[:user_id],:status => params[:status],:group_id => params[:group_id] }
+			#session[:wkexpense]  = session[:wktimes] 
+		elsif params[:searchlist] =='wktime'
+			session[:wktimes][:period_type] = params[:period_type]
+			session[:wktimes][:period] = params[:period]
+			session[:wktimes][:from] = params[:from]
+			session[:wktimes][:to] = params[:to]
+			session[:wktimes][:project_id] = params[:project_id]
+			session[:wktimes][:projgrp_type] = params[:projgrp_type]
+			session[:wktimes][:user_id] = params[:user_id]
+			session[:wktimes][:status] = params[:status]
+			session[:wktimes][:group_id] = params[:group_id]
+		elsif params[:searchlist] =='wkexpense'
+			session[:wkexpense][:period_type] = params[:period_type]
+			session[:wkexpense][:period] = params[:period]
+			session[:wkexpense][:from] = params[:from]
+			session[:wkexpense][:to] = params[:to]
+			session[:wkexpense][:project_id] = params[:project_id]
+			session[:wkexpense][:projgrp_type] = params[:projgrp_type]
+			session[:wkexpense][:user_id] = params[:user_id]
+			session[:wkexpense][:status] = params[:status]
+			session[:wkexpense][:group_id] = params[:group_id]
+		end		
+	 end
 end

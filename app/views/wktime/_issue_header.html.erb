@@ -14,9 +14,23 @@
 
 <%= render :partial => controller.getCFInRowHeaderHTML %>
 <% startOfWeek = getStartOfWeek %>
-<% for i in 0..6%>
+<% period_types = periodtypes
+	day_nanme =0
+%>
+<% for i in 0..@days%>
+
+<% if  period_types.blank? %>
 <!-- Martin Dube contribution: 'start of the week' configuration -->
-<th><%= l('date.abbr_day_names')[(i+(startOfWeek))%7] %><br /><%= I18n.localize(@startday+i, :format=>:short) unless @startday.nil? %></th>
+	<% day_nanme = (i+(startOfWeek))%7 %>
+<!-- <th><%= l('date.abbr_day_names')[(i+(startOfWeek))%7] %><br /><%= I18n.localize(@startday+i, :format=>:short) unless @startday.nil? %></th>-->
+<% else 
+	if  !@startday.blank? 
+		date = @startday +i;
+		day_nanme = date.cwday
+		day_nanme = 0 if day_nanme == 7
+	end
+end %>
+<th><%=  l('date.abbr_day_names') [day_nanme] %><br /><%= I18n.localize(@startday+i, :format=>:short) unless @startday.nil? %></th>
 <% end %>
 <th></th>
 

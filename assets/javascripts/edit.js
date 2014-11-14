@@ -927,7 +927,7 @@ function issueAutocomplete(txtissue,row){
         });
 }
 
-function validateMinhour(minHour,nonWorkingDay){
+function validateMinhour(minHour,nonWorkingDay,days){
 	var valid=true;
 	var totalhr = document.getElementById("total_hours").innerHTML;
 	totalhr = Number(totalhr);
@@ -937,7 +937,7 @@ function validateMinhour(minHour,nonWorkingDay){
 	 }
 	 
 	 if (minHour!=0 && !isNaN(minHour)){	
-		 for (i=1;i<=7;i++){
+		 for (i=1;i<=days;i++){
 			var dayTotal= document.getElementById('day_total_'+i).innerHTML;
 			dayTotal = Number(dayTotal.replace(decSeparator, '\.'));
 			if(nonWorkingDay.indexOf(i.toString())== -1 || dayTotal > 0){				
