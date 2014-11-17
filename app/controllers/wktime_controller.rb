@@ -1028,8 +1028,6 @@ private
 		period_type =  params[:period_type]
 		period = params[:period]
 		fromdate = todate= nil
-		Rails.logger.info("----------------------------- period_start_date ---------------------------------------------------------------")	
-					Rails.logger.info("@period_start_date: #{period}, #{period_type}")
 	elsif params[:tab] == 'wkexpense'
 		period_type = session[:wkexpense][:period_type]
 		period = session[:wkexpense][:period]
@@ -1071,8 +1069,6 @@ private
         @to = Date.civil(Date.today.year, 12, 31)
 	else
 		period_start_date = call_hook(:controller_period_date,:periodtype => period.to_s)
-		Rails.logger.info("----------------------------- period_start_date ---------------------------------------------------------------")	
-					Rails.logger.info("@period_start_date: #{period_start_date}")
 		if  !period_start_date.blank? && !period_start_date[0].blank?
 			@from = period_start_date[0].to_date
 			end_day = call_hook(:controller_edit_date,:currentday => @from.to_s)

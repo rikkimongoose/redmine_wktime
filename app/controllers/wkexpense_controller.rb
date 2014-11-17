@@ -65,7 +65,9 @@ class WkexpenseController < WktimeController
                 'project' => "#{Project.table_name}.name",
                 'issue' => 'issue_id',
                 'amount' => 'amount'
-
+	 if params[:control].blank?  
+		params[:control] = 'reportdetail'
+	 end
     retrieve_date_range
 	@from = getStartDay(@from)
 	@to = getEndDay(@to)
@@ -119,7 +121,10 @@ class WkexpenseController < WktimeController
 	
   end
   
-   def report   
+   def report  
+	if params[:control].blank?
+		params[:control] = 'report'
+	end 
 	retrieve_date_range
     @report = WkexpenseHelper::WKExpenseReport.new(@project, @issue, params[:criteria], params[:columns], @from, @to)
 
