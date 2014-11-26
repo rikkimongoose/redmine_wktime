@@ -55,7 +55,7 @@ ru:
   label_wk_prev_week_tip: Пред. неделя
   label_wk_next_week_tip: След. неделя
   label_wkexpense: Расходы
-  label_te: Застраченное время
+  label_te: Затраченное время
   label_wk_allow_user_filter_tracker: Разрешить пользователю фильтровать по трекеру
   label_wk_filter_issue_tracker: Фильтровать задачи по трекеру
   label_wk_currency: Валюта
