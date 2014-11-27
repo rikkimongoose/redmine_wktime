@@ -1,111 +1,111 @@
 # English strings go here for Rails i18n
 ru:
   my_label: "Моя метка"
-  label_wktime: Время
-  label_wk_project_dd_width: Ширина списка проектов
-  label_wk_issue_dd_width: Ширина списка задач
-  label_wk_actv_dd_width: Ширина списка активностей
-  label_wk_restr_max_hour: Всегда указывать максимум часов в день
-  label_wk_max_hour_day: Максимум часов в день
-  label_wk_restr_min_hour: Всегда указывать минимум часов в день
-  label_wk_min_hour_day: Минимум часов в день
-  label_wk_page_width: Ширина страницы
-  label_wk_page_height: Высота страницы
-  label_wk_margin_top: Верхний отступ
-  label_wk_margin_bottom: Нижний отступ
-  label_wk_margin_left: Левый отступ
-  label_wk_margin_right: Правый отступ
-  label_wk_line_space: Свободная линия
-  label_wk_header_logo: Логотип
-  label_wk_purchase_order: Заказ
-  label_wk_signature: Сигнатура
-  label_wk_submitted_by: Загружен
-  label_wk_approved_by: Подтверждён
-  label_wk_enter_issue_id: Введите ID задачи
-  label_wk_work_time_header: Показывать заголовок времени работы
-  label_wk_allow_blank_issue: Разрешить пустые задачи
-  label_wk_enter_comment_in_row: Комментарий
-  label_wk_enter_cf_in_row: Доп. строка
-  label_wk_use_detail_popup: Использовать всплывающее окно для детального 
-  label_wk_approval_system: Система подтверждений
-  label_wk_use_approval_system: Использовать систем подверждений
+  label_wktime: "Время"
+  label_wk_project_dd_width: "Ширина списка проектов"
+  label_wk_issue_dd_width: "Ширина списка задач"
+  label_wk_actv_dd_width: "Ширина списка активностей"
+  label_wk_restr_max_hour: "Всегда указывать максимум часов в день"
+  label_wk_max_hour_day: "Максимум часов в день"
+  label_wk_restr_min_hour: "Всегда указывать минимум часов в день"
+  label_wk_min_hour_day: "Минимум часов в день"
+  label_wk_page_width: "Ширина страницы"
+  label_wk_page_height: "Высота страницы"
+  label_wk_margin_top: "Верхний отступ"
+  label_wk_margin_bottom: "Нижний отступ"
+  label_wk_margin_left: "Левый отступ"
+  label_wk_margin_right: "Правый отступ"
+  label_wk_line_space: "Свободная линия"
+  label_wk_header_logo: "Логотип"
+  label_wk_purchase_order: "Заказ"
+  label_wk_signature: "Сигнатура"
+  label_wk_submitted_by: "Загружен"
+  label_wk_approved_by: "Подтверждён"
+  label_wk_enter_issue_id: "Введите ID задачи"
+  label_wk_work_time_header: "Показывать заголовок времени работы"
+  label_wk_allow_blank_issue: "Разрешить пустые задачи"
+  label_wk_enter_comment_in_row: "Комментарий"
+  label_wk_enter_cf_in_row: "Доп. строка"
+  label_wk_use_detail_popup: "Использовать всплывающее окно для деталей временной записи"
+  label_wk_approval_system: "Система подтверждений"
+  label_wk_use_approval_system: "Использовать систем подверждений"
   label_wk_auto_approve: "Автоматическое подверждение"
-  label_wk_submission_ack: Благодарности
-  label_wk_reject_reason: Причина отказа
+  label_wk_submission_ack: "Благодарности"
+  label_wk_reject_reason: "Причина отказа"
 
-  label_wk_enter_issue_As: Добавить задание как
-  label_wk_enter_issue_Description: Добавить задание как тему
+  label_wk_enter_issue_As: "Добавить задание как"
+  label_wk_enter_issue_Description: "Добавить задание как тему"
   label_wk_own_approve: "Подтверждающий может подтвердить свои %{value}"
-  label_wk_reject_timesheet: Отвергнутая запись
-  label_wk_reject_expense: Отвергнутые расходы
-  label_wk_submittedon: Загружен на
-  label_wk_rejectedby: Отвергнут
-  label_wk_rejectedon: Отвергнут от
-  label_wk_timesheet_reject: Ваш отчёт по времени был отвергнут
-  label_wk_expense_reject: Ваши затраты были отвергнуты
-  label_wk_previous_template_week: Количество недель для шаблона предыдущей недели
-  label_wk_dropdown: Список
-  label_wk_issueid: ID задачи
-  label_start: Начало
-  label_end: Конец
-  label_remaining_hours: Оставшиеся часы
+  label_wk_reject_timesheet: "Отвергнутая запись"
+  label_wk_reject_expense: "Отвергнутые расходы"
+  label_wk_submittedon: "Загружен на"
+  label_wk_rejectedby: "Отвергнут"
+  label_wk_rejectedon: "Отвергнут от"
+  label_wk_timesheet_reject: "Ваш отчёт по времени был отвергнут"
+  label_wk_expense_reject: "Ваши затраты были отвергнуты"
+  label_wk_previous_template_week: "Количество недель для шаблона предыдущей недели"
+  label_wk_dropdown: "Список"
+  label_wk_issueid: "ID задачи"
+  label_start: "Начало"
+  label_end: "Конец"
+  label_remaining_hours: "Оставшиеся часы"
   label_warning_wktime_time_entry: "Внимание: табель за этот период защищён, вы не можете вносить время. Это приведёт к ошибке."  
 
-  label_wk_first_day_of_week: Первый день недели
-  label_wk_prev_week_tip: Пред. неделя
-  label_wk_next_week_tip: След. неделя
-  label_wkexpense: Расходы
-  label_te: Затраченное время
-  label_wk_allow_user_filter_tracker: Разрешить пользователю фильтровать по трекеру
-  label_wk_filter_issue_tracker: Фильтровать задачи по трекеру
-  label_wk_currency: Валюта
-  label_wk_time: Время за неделю  
+  label_wk_first_day_of_week: "Первый день недели"
+  label_wk_prev_week_tip: "Пред. неделя"
+  label_wk_next_week_tip: "След. неделя"
+  label_wkexpense: "Расходы"
+  label_te: "Затраченное время"
+  label_wk_allow_user_filter_tracker: "Разрешить пользователю фильтровать по трекеру"
+  label_wk_filter_issue_tracker: "Фильтровать задачи по трекеру"
+  label_wk_currency: "Валюта"
+  label_wk_time: "Время за неделю"  
 
-  label_wkexpense_reports: Отчёт по расходам
-  label_spent_expense: Потрачено
-  label_wk_submission_deadline: Крайний срок
-  label_wk_nonsub_mail_subject: Извещать, если не загружено
-  label_wk_nonsub_mail_notification: Отправлять e-mail, если не загружено
-  label_wk_nonsub_mail_message: Текст сообщения e-mail
+  label_wkexpense_reports: "Отчёт по расходам"
+  label_spent_expense: "Потрачено"
+  label_wk_submission_deadline: "Крайний срок"
+  label_wk_nonsub_mail_subject: "Извещать, если не загружено"
+  label_wk_nonsub_mail_notification: "Отправлять e-mail, если не загружено"
+  label_wk_nonsub_mail_message: "Текст сообщения e-mail"
   label_wk_warning_nonsub_notification: "Внимание: Все изменения в настройках ниже вступают в силу только после перезапуска Redmine"
-  label_wk_minutes: мин.  
-  label_wkexpense_entry_projects: Для этих проектов запись о расходах обязательна
+  label_wk_minutes: "мин." 
+  label_wkexpense_entry_projects: "Для этих проектов запись о расходах обязательна"
 
-  label_wk_public_holiday: Праздники
-  label_wk_description: Описание 
-  label_wk_date_exists: Эта дата уже существует
-  label_wk_select_holiday: Пожалуйста, укажите праздник
+  label_wk_public_holiday: "Праздники"
+  label_wk_description: "Описание" 
+  label_wk_date_exists: "Эта дата уже существует"
+  label_wk_select_holiday: "Пожалуйста, укажите праздник"
 
 
-  button_new_wktime: Новый табель
-  button_continue: Продолжить
-  button_add_row: Добавить строку
-  button_new_wkexpense: Новая запись расходов  
+  button_new_wktime: "Новый табель"
+  button_continue: "Продолжить"
+  button_add_row: "Добавить строку"
+  button_new_wkexpense: "Новая запись расходов"  
 
-  button_wk_unsubmit: Выгрузить
-  button_wk_approve: Подтвердить
-  button_wk_reject: Отвергнуть
-  button_wk_unapprove: Снять подтверждение
-  chkbox_prev_tmpl: Шаблон предыдущей недели
-  chkbox_closed_issues: Включить закрытые задания предыдущей недели
+  button_wk_unsubmit: "Выгрузить"
+  button_wk_approve: "Подтвердить"
+  button_wk_reject: "Отвергнуть"
+  button_wk_unapprove: "Снять подтверждение"
+  chkbox_prev_tmpl: "Шаблон предыдущей недели"
+  chkbox_closed_issues: "Включить закрытые задания предыдущей недели"
 
   error_te_save_failed: "Не удаётся сохранить %{label}: %{error}"
-  error_wktime_save_nothing: Нечего сохранять
-  error_not_permitted_save: Нет разрешения на сохранение
+  error_wktime_save_nothing: "Нечего сохранять"
+  error_not_permitted_save: "Нет разрешения на сохранение"
 
-  wk_status_new: Новый
-  wk_status_submitted: Загружен
-  wk_status_approved: Подтверждён
-  wk_status_rejected: Отвергнут
+  wk_status_new: "Новый"
+  wk_status_submitted: "Загружен"
+  wk_status_approved: "Подтверждён"
+  wk_status_rejected: "Отвергнут"
 
   text_start_of_week_confirmation: "Вы уверены? Статус будет утрачен у уже загруженного %{value}"
   text_wk_warning_min_hour: "Вы ввели меньше часов (%{value}) за день, чем минимально допустимо"
   text_wk_warning_max_hour: "Вы ввели больше часов (%{value}) за день, чем максимально допустимо"
-  field_amount: Количество
+  field_amount: "Количество"
 
 
-  label_wk_allow_filter_issue: Разрешить пользовательскую фильтрацию в моих задачак
-  label_wk_no_user_current_project: в выбранном проекте нет пользователей
+  label_wk_allow_filter_issue: "Разрешить пользовательскую фильтрацию в моих задачах"
+  label_wk_no_user_current_project: "в выбранном проекте нет пользователей"
 
-  permission_approve_time_entries: Подтверждение логов времени
+  permission_approve_time_entries: "Подтверждение логов времени"
 
